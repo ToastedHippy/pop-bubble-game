@@ -3,12 +3,14 @@ import Application = PIXI.Application;
 import Container = PIXI.Container;
 import {FirstLevel} from "../levels/FirstLevel";
 import {Level} from "./Level";
+import {UiLayer} from "./ui-layer";
 
 export class Game {
 
     private readonly pixiApp: Application;
     private readonly stage: Container;
     private activeLevel: Level;
+    private uiLayer: UiLayer;
 
     constructor(container: HTMLElement) {
         const containerH = container.clientHeight;
@@ -21,7 +23,7 @@ export class Game {
             backgroundColor: 0x87CEEB
         });
         this.stage = this.pixiApp.stage;
-
+        this.uiLayer = new UiLayer(container);
         container.appendChild(this.pixiApp.view);
     }
 
@@ -38,18 +40,6 @@ export class Game {
             this.activeLevel.run();
         } catch (e) {
             console.log(e)
-        }
-    }
-
-    pause() {
-        if (this.activeLevel) {
-            this.activeLevel.pause();
-        }
-    }
-
-    resume() {
-        if (this.activeLevel) {
-            this.activeLevel.resume();
         }
     }
 

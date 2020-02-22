@@ -30,8 +30,11 @@ export class FirstLevel extends Level {
     async init() {
         await this.loadActorsTextures(this.balloonsClasses);
 
-        this.createBalloon();
-        setInterval(() => this.launchBalloon(), this.balloonInterval);
+        setInterval(() => {
+            if (!this.gameState.paused){
+                this.launchBalloon();
+            }
+        }, this.balloonInterval);
     }
 
     private updateBalloon(balloon: Balloon, deltaTime: number) {
@@ -55,7 +58,10 @@ export class FirstLevel extends Level {
         const balloonClass = this.balloonsClasses[this.getRandomNumber(0, this.balloonsClasses.length - 1)];
 
         const balloon = this.createActor(balloonClass);
-        balloon.sprite.on('pointerdown', () => this.removeActor(balloon));
+        balloon.sprite.on('pointerdown', () => {
+            this.gameState.score++;
+            this.removeActor(balloon);
+        });
 
         return balloon;
     }

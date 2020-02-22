@@ -4,16 +4,25 @@ import LoaderResource = PIXI.LoaderResource;
 import {Actor, ActorClass} from "./Actor";
 import Renderer = PIXI.Renderer;
 import Application = PIXI.Application;
+import {GameState} from "./game-state";
 
 export abstract class Level {
 
     protected levelContainer = new Container();
     protected app: Application;
     protected actors: {[key: string]: Actor} = {};
-    private renderF: (d: number) => void;
-    private paused: boolean = false;
+    private readonly renderF: (d: number) => void;
+    protected gameState: GameState;
 
     protected constructor() {
+        this.gameState = GameState.instance;
+
+        this.renderF = (delta) => {
+
+            if (!this.gameState.paused) {
+                this.render(delta);
+            }
+        };
     }
 
     attachTo(app: Application) {
@@ -22,22 +31,7 @@ export abstract class Level {
     }
 
     attachRenderF() {
-        this.renderF = (delta) => {
-
-            if (!this.paused) {
-                this.render(delta);
-            }
-        };
-
         this.app.ticker.add(this.renderF);
-    }
-
-    pause() {
-        this.paused = true;
-    }
-
-    resume() {
-        this.paused = false;
     }
 
     detachRenderF() {
