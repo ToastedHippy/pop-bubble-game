@@ -1,15 +1,9 @@
 import {Level} from "../models/Level";
-import {Balloon, BlueBalloon, GreenBalloon, RedBalloon, YellowBalloon} from "../models/Balloon";
+import {Balloon} from "../models/Balloon";
 import Ticker = PIXI.Ticker;
 
 export class FirstLevel extends Level {
 
-    private balloonsClasses = [
-        RedBalloon,
-        GreenBalloon,
-        BlueBalloon,
-        YellowBalloon
-    ];
     private readonly balloonSpeed = 2;
     private readonly balloonInterval = 1500;
 
@@ -28,7 +22,7 @@ export class FirstLevel extends Level {
     }
 
     async init() {
-        await this.loadActorsTextures(this.balloonsClasses);
+        await Balloon.loadResources();
 
         setInterval(() => {
             if (!this.gameState.paused){
@@ -55,13 +49,16 @@ export class FirstLevel extends Level {
 
     private createBalloon() {
 
-        const balloonClass = this.balloonsClasses[this.getRandomNumber(0, this.balloonsClasses.length - 1)];
+        const balloonColor = Balloon.colors[this.getRandomNumber(0, Balloon.colors.length - 1)];
 
-        const balloon = this.createActor(balloonClass);
+        const balloon = new Balloon(balloonColor);
+
         balloon.sprite.on('pointerdown', () => {
             this.gameState.score++;
             this.removeActor(balloon);
         });
+
+        this.attachActor(balloon);
 
         return balloon;
     }

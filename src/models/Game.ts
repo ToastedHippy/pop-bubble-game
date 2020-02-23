@@ -34,7 +34,7 @@ export class Game {
 
     startLevel(level: Level) {
         this.activeLevel = level;
-        this.activeLevel.attachTo(this.pixiApp);
+        this.activeLevel.attachToApp(this.pixiApp);
 
         try {
             this.activeLevel.run();

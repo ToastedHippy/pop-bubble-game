@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import Container = PIXI.Container;
 import LoaderResource = PIXI.LoaderResource;
-import {Actor, ActorClass} from "./Actor";
+import {Actor} from "./actor/Actor";
 import Renderer = PIXI.Renderer;
 import Application = PIXI.Application;
 import {GameState} from "./game-state";
@@ -25,7 +25,7 @@ export abstract class Level {
         };
     }
 
-    attachTo(app: Application) {
+    attachToApp(app: Application) {
         this.app = app;
         this.app.stage.addChild(this.levelContainer)
     }
@@ -38,11 +38,9 @@ export abstract class Level {
         this.app.ticker.remove(this.renderF);
     }
 
-    protected createActor(actorClass: ActorClass) {
-        const actor = new actorClass();
+    protected attachActor(actor: Actor) {
         this.actors[actor.key] = actor;
         this.levelContainer.addChild(actor.sprite);
-        return actor;
     }
 
     removeActor(actor: Actor) {
@@ -53,17 +51,13 @@ export abstract class Level {
         }
     }
 
-    abstract async init();
+    public abstract async init();
 
     run() {
-        this.init().then(() => this.attachRenderF());
+        this.init()
+            .then(() => this.attachRenderF());
     }
 
     protected abstract render(deltaTime: number): void
-
-    protected async loadActorsTextures(actorClasses: ActorClass[]) {
-        return Promise.all(actorClasses.map(ac => ac.loadTexture()))
-    }
-
 
 }
