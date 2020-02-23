@@ -3,7 +3,7 @@ import Application = PIXI.Application;
 import Container = PIXI.Container;
 import {FirstLevel} from "../levels/FirstLevel";
 import {Level} from "./Level";
-import {UiLayer} from "./ui-layer";
+import {UiLayer} from "./Ui-layer";
 
 export class Game {
 

@@ -18,11 +18,14 @@ export class MultiTextureActor extends Actor {
 
     protected static textures: Record<string, Texture>;
     protected static texturesUrls: Record<string, string>;
-    public static loadResources() {
+
+    public static async loadResources() {
 
         if (!this.texturesUrls || !Object.keys(this.texturesUrls).length) {
             throw new Error(`texturesUrls does not set on class ${this.name}`);
         }
+
+        await Actor.loadResources.call(this);
 
         this.textures = {};
 
@@ -36,7 +39,9 @@ export class MultiTextureActor extends Actor {
             loader.load((loader, resources) => {
 
                 for (const key in resources) {
-                    this.textures[key] = resources[key].texture;
+                    if (resources[key].texture) {
+                        this.textures[key] = resources[key].texture;
+                    }
                 }
 
                 resolve();

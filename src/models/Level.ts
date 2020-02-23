@@ -4,7 +4,7 @@ import LoaderResource = PIXI.LoaderResource;
 import {Actor} from "./actor/Actor";
 import Renderer = PIXI.Renderer;
 import Application = PIXI.Application;
-import {GameState} from "./game-state";
+import {GameState} from "./Game-state";
 
 export abstract class Level {
 

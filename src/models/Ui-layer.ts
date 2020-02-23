@@ -1,4 +1,4 @@
-import {GameState} from "./game-state";
+import {GameState} from "./Game-state";
 
 export class UiLayer {
 

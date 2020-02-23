@@ -22,6 +22,10 @@ export class Balloon extends MultiTextureActor {
         [EBalloonColor.yellow]: 'assets/images/yellow-balloon.png'
     };
 
+    protected static soundsUrls = {
+        'pop': 'assets/sounds/balloon-pop.mp3'
+    };
+
     constructor(color: EBalloonColor) {
         super( color, {interactive: true});
     }
