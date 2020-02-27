@@ -1,6 +1,7 @@
 import {Actor} from "./actor/Actor";
 import {MulticastOperator} from "rxjs/internal/operators/multicast";
 import {MultiTextureActor} from "./actor/multi-texture-actor";
+import {AnimatedActor} from "./actor/animated-actor";
 
 
 export enum EBalloonColor {
@@ -10,24 +11,25 @@ export enum EBalloonColor {
     yellow = 'yellow'
 }
 
-export class Balloon extends MultiTextureActor {
-    public static get colors() {
-        return Object.keys(this.texturesUrls) as EBalloonColor[];
-    };
-
-    protected static texturesUrls = {
-        [EBalloonColor.red]: 'assets/images/red-balloon.png',
-        [EBalloonColor.green]: 'assets/images/green-balloon.png',
-        [EBalloonColor.blue]: 'assets/images/blue-balloon.png',
-        [EBalloonColor.yellow]: 'assets/images/yellow-balloon.png'
-    };
+export abstract class Balloon extends AnimatedActor {
 
     protected static soundsUrls = {
         'pop': 'assets/sounds/balloon-pop.mp3'
     };
 
-    constructor(color: EBalloonColor) {
-        super( color, {interactive: true});
+    protected constructor() {
+        super({interactive: true});
+    }
+}
+
+export class RedBalloon extends Balloon{
+
+    protected static animationsUrls = {
+        'balloon-pop': 'assets/images/balloon-red/sprites.json'
+    };
+
+    constructor() {
+        super();
     }
 }
 

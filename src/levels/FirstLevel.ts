@@ -1,5 +1,5 @@
 import {Level} from "../models/Level";
-import {Balloon} from "../models/Balloon";
+import {Balloon, RedBalloon} from "../models/Balloon";
 import {Cloud} from "../models/Cloud";
 
 export class FirstLevel extends Level {
@@ -16,7 +16,7 @@ export class FirstLevel extends Level {
     }
 
     async init() {
-        await Balloon.loadResources();
+        await RedBalloon.loadResources();
         await Cloud.loadResources();
 
         this.startLaunchingClouds();
@@ -80,14 +80,14 @@ export class FirstLevel extends Level {
 
     private createBalloon() {
 
-        const balloonColor = Balloon.colors[this.getRandomNumber(0, Balloon.colors.length - 1)];
-
-        const balloon = new Balloon(balloonColor);
+        const balloon = new RedBalloon();
 
         balloon.sprite.on('pointerdown', () => {
             this.gameState.score++;
             balloon.playSound('pop');
-            this.removeActor(balloon);
+            balloon.playAnimation({
+                onComplete: () => this.removeActor(balloon)
+            });
         });
 
         this.attachActor(balloon);

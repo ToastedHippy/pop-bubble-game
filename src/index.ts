@@ -4,5 +4,3 @@ const appContainer = document.getElementById('pixiApp');
 const game = new Game(appContainer);
 
 game.run();
-
-
