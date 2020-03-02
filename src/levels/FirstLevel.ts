@@ -1,6 +1,8 @@
 import {Level} from "../models/Level";
-import {Balloon, RedBalloon} from "../models/Balloon";
+import {Balloon} from "../models/Balloon";
 import {Cloud} from "../models/Cloud";
+import {ResourceStore} from "../models/Resource-store";
+import {Helper} from "../models/Helper";
 
 export class FirstLevel extends Level {
 
@@ -16,8 +18,9 @@ export class FirstLevel extends Level {
     }
 
     async init() {
-        await RedBalloon.loadResources();
-        await Cloud.loadResources();
+        // TODO make load by array?
+        await this.resourcesStore.loadResourcesOf(Cloud);
+        await this.resourcesStore.loadResourcesOf(Balloon);
 
         this.startLaunchingClouds();
         this.startLaunchingBalloons();
@@ -80,11 +83,11 @@ export class FirstLevel extends Level {
 
     private createBalloon() {
 
-        const balloon = new RedBalloon();
+        const balloon = new Balloon();
 
         balloon.sprite.on('pointerdown', () => {
             this.gameState.score++;
-            balloon.playSound('pop');
+            // balloon.playSound('pop');
             balloon.playAnimation({
                 onComplete: () => this.removeActor(balloon)
             });
@@ -96,9 +99,7 @@ export class FirstLevel extends Level {
     }
 
     private createCloud() {
-        const shape = Cloud.shapes[this.getRandomNumber(0, Cloud.shapes.length - 1)];
-
-        const cloud = new Cloud(shape);
+        const cloud = new Cloud();
         this.attachActor(cloud);
         return cloud;
     }
@@ -107,7 +108,7 @@ export class FirstLevel extends Level {
         const halfOfBalloonW = balloon.sprite.width / 2;
         const balloonH = balloon.sprite.height;
         const viewW = this.app.screen.width;
-        const rand = this.getRandomNumber(halfOfBalloonW, viewW - halfOfBalloonW);
+        const rand = Helper.getRandomNumber(halfOfBalloonW, viewW - halfOfBalloonW);
         return [Math.floor(rand), this.app.screen.height + balloonH];
     }
 
@@ -119,15 +120,11 @@ export class FirstLevel extends Level {
         const rightBorder = this.app.screen.width + cloudW + 50;
 
         const x = spawnInView
-            ? this.getRandomNumber(0, rightBorder)
+            ? Helper.getRandomNumber(0, rightBorder)
             : rightBorder;
-        const y = this.getRandomNumber(topBorder + halfCloudH, bottomBorder - halfCloudH);
+        const y = Helper.getRandomNumber(topBorder + halfCloudH, bottomBorder - halfCloudH);
 
         return [x, y];
-    }
-
-    private getRandomNumber(min, max) {
-        return Math.floor(min + Math.random() * (max + 1 - min))
     }
 }
 

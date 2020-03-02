@@ -1,20 +1,25 @@
-import {MultiTextureActor} from "./actor/multi-texture-actor";
+import {DefineResources} from "./DefineResources.decorator";
+import {Actor} from "./actor/Actor";
+import {Helper} from "./Helper";
 
-export class Cloud extends MultiTextureActor {
-
-    public static get shapes() {
-        return Object.keys(this.texturesUrls)
-    }
-
-    public static texturesUrls = {
+@DefineResources({
+    textures: {
         shape1: 'assets/images/cloud1.png',
         shape2: 'assets/images/cloud2.png',
         shape3: 'assets/images/cloud3.png',
         shape4: 'assets/images/cloud4.png',
         shape5: 'assets/images/cloud5.png',
-    };
+    }
+})
+export class Cloud extends Actor {
 
-    constructor(shape: string) {
-        super(shape);
+    constructor() {
+        super();
+    }
+
+    protected createSprite(initialResourceKey?: string): PIXI.Sprite {
+        const shapes = Object.keys(this.resourceStore.resources.textures);
+        const shape = shapes[Helper.getRandomNumber(0, shapes.length - 1)];
+        return super.createSprite(shape);
     }
 }

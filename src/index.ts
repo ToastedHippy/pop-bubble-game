@@ -1,6 +1,4 @@
 import {Game} from "./models/Game";
-import {CONFIG} from "./config";
-
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -15,3 +13,4 @@ const appContainer = document.getElementById('pixiApp');
 const game = new Game(appContainer);
 
 game.run();
+

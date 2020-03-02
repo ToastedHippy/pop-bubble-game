@@ -5,6 +5,7 @@ import {Actor} from "./actor/Actor";
 import Renderer = PIXI.Renderer;
 import Application = PIXI.Application;
 import {GameState} from "./Game-state";
+import {ResourceStore} from "./Resource-store";
 
 export abstract class Level {
 
@@ -13,10 +14,11 @@ export abstract class Level {
     protected actors: {[key: string]: Actor} = {};
     private readonly renderF: (d: number) => void;
     protected gameState: GameState;
+    protected resourcesStore: ResourceStore;
 
     protected constructor() {
         this.gameState = GameState.instance;
-
+        this.resourcesStore = ResourceStore.instance;
         this.renderF = (delta) => {
 
             if (!this.gameState.paused) {

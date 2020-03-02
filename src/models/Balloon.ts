@@ -1,7 +1,6 @@
-import {Actor} from "./actor/Actor";
-import {MulticastOperator} from "rxjs/internal/operators/multicast";
-import {MultiTextureActor} from "./actor/multi-texture-actor";
-import {AnimatedActor} from "./actor/animated-actor";
+import {AnimatedActor} from "./actor/Animated-actor";
+import {DefineResources} from "./DefineResources.decorator";
+import {Helper} from "./Helper";
 
 
 export enum EBalloonColor {
@@ -11,32 +10,28 @@ export enum EBalloonColor {
     yellow = 'yellow'
 }
 
-export abstract class Balloon extends AnimatedActor {
+@DefineResources({
+        sounds: {
+            'pop': 'assets/sounds/balloon-pop.mp3'
+        },
+        animations: {
+            'red': 'assets/images/balloon-red/sprites.json'
+        }
+    })
+export class Balloon extends AnimatedActor {
 
-    protected static soundsUrls = {
-        'pop': 'assets/sounds/balloon-pop.mp3'
-    };
-
-    protected constructor() {
-        super({interactive: true});
-    }
-}
-
-export class RedBalloon extends Balloon{
-
-    protected static animationsUrls = {
-        'balloon-pop': 'assets/images/balloon-red/sprites.json'
-    };
+    public readonly color: string;
 
     constructor() {
-        super();
+        // TODO make random
+        super({interactive: true});
+        this.color = 'red';
+    }
+
+    protected createSprite(initialAnimKey): PIXI.AnimatedSprite {
+        let colors = Object.keys(this.resourceStore.resources.animations);
+        let color = Helper.getRandomNumber(0, colors.length - 1);
+        return super.createSprite(color);
     }
 }
-
-
-//
-// RedBalloon.textureUrl = 'assets/images/red-balloon.png';
-// GreenBalloon.textureUrl = 'assets/images/green-balloon.png';
-// BlueBalloon.textureUrl = 'assets/images/blue-balloon.png';
-// YellowBalloon.textureUrl = 'assets/images/yellow-balloon.png';
 

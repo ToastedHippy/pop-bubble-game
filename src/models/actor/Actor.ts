@@ -1,54 +1,36 @@
 import * as PIXI from "pixi.js";
 import {IActorOptions} from "./actor.interface";
 import Sprite = PIXI.Sprite;
-import {Howl} from 'howler'
+import {ResourceStore} from "../Resource-store";
 
 export abstract class Actor {
-    protected static soundsUrls: Record<string, string>;
-    protected static sounds: Record<string, Howl>;
-    public readonly abstract sprite: Sprite;
-    readonly key: string;
 
-    protected constructor() {
+    public readonly sprite: Sprite;
+    public readonly key: string;
+
+    protected readonly resourceStore: ResourceStore;
+
+    protected constructor(key?: string, options?: IActorOptions) {
         this.key = Math.random().toString(36).substr(2, 9);
+        this.resourceStore = ResourceStore.instance;
+        this.sprite = this.createSprite(key);
+        this.configure(options);
     }
 
-    public static async loadResources() {
+    protected createSprite(initialResourceKey?: string) {
 
-        return new Promise((resolve, reject) => {
-            if (this.soundsUrls) {
-
-                this.sounds = {};
-
-                for (const key in this.soundsUrls) {
-                    this.sounds[key] = new Howl({
-                        src: this.soundsUrls[key]
-                    })
-
-                    this.sounds[key].once('load', () => {
-                        if (Object.values(this.sounds).every(s => s.state() === 'loaded')) {
-                            resolve();
-                        }
-                    })
-
-                    // this.sounds[key].once('loadError', () => reject(new Error('could not load sound')))
-                }
-
-            } else {
-                resolve();
+        if (initialResourceKey) {
+            let initTexture = this.resourceStore.resources.textures[initialResourceKey];
+            if (!initTexture) {
+                throw new Error(`texture ${initialResourceKey} does not exists`)
             }
-        })
-    }
-
-    playSound(soundKey: string) {
-        if (this.constructor['sounds'] && this.constructor['sounds'][soundKey]) {
-            this.constructor['sounds'][soundKey].play();
+            return new Sprite(initTexture);
+        } else {
+            return new Sprite()
         }
     }
 
-    configure(options?: IActorOptions) {
-        this.throwIfSpriteMissed();
-
+    protected configure(options?: IActorOptions) {
         this.sprite.anchor.set(0.5);
         this.sprite.pivot.set(0.5);
 
@@ -63,8 +45,6 @@ export abstract class Actor {
     }
 
     public move(x?: number, y?: number) {
-        this.throwIfSpriteMissed();
-
         this.sprite.position.set(x, y);
     }
 
