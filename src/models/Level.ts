@@ -42,13 +42,12 @@ export abstract class Level {
 
     protected attachActor(actor: Actor) {
         this.actors[actor.key] = actor;
-        this.levelContainer.addChild(actor.sprite);
+        actor.attachToContainer(this.levelContainer);
     }
 
     removeActor(actor: Actor) {
         if (actor.key in this.actors) {
-            this.levelContainer.removeChild(actor.sprite);
-
+            actor.removeFromAttachedContainer();
             delete this.actors[actor.key];
         }
     }

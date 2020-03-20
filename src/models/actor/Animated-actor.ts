@@ -1,36 +1,21 @@
 import * as PIXI from "pixi.js";
-import {Actor} from "./Actor";
+import {Actor, IActorOptions} from "./Actor";
 import AnimatedSprite = PIXI.AnimatedSprite;
-import {IActorOptions} from "./actor.interface";
 
 export abstract class AnimatedActor extends Actor {
 
-    public readonly sprite: AnimatedSprite;
+    protected readonly sprite: AnimatedSprite;
     protected currentAnimationKey: string;
 
-    protected constructor(options?: IAnimatedActorOptions) {
-        let {interactive} = options;
-        super(options.initialAnimKey,{interactive});
-
-        //TODO get reed of hardcode
-        this.sprite.animationSpeed = 0.6;
+    protected constructor(options?: IActorOptions) {
+        super(options);
     }
 
-    protected createSprite(initialAnimKey?) {
-        this.currentAnimationKey = initialAnimKey ? initialAnimKey : Object.keys(this.resourceStore.resources.animations)[0];
-
-        if (!this.currentAnimationKey) {
-            throw new Error(`animation ${this.currentAnimationKey} does not exists`)
-        }
-
-        return new AnimatedSprite(this.resourceStore.resources.animations[this.currentAnimationKey])
-    }
-
-    playAnimation(options?: {animationKey?: string, loop?: boolean, onComplete?: () => void}) {
+    public playAnimation(options?: { animationKey?: string, loop?: boolean, onComplete?: () => void }) {
         if (options) {
-            this.sprite.loop = options.loop;
+            this.sprite.loop = !!options.loop;
 
-            if(options.animationKey && this.currentAnimationKey !== options.animationKey) {
+            if (options.animationKey && this.currentAnimationKey !== options.animationKey) {
 
             }
 
@@ -42,9 +27,17 @@ export abstract class AnimatedActor extends Actor {
         this.sprite.play();
     }
 
+    protected createSprite(initialAnimKey?) {
+        if (!initialAnimKey) {
+            throw new Error(`you must set initial animation`);
+        }
+        let animation = this.resourceStore.resources.animations[initialAnimKey];
 
+        if (!animation) {
+            throw new Error(`animation ${animation} does not exists`);
+        }
+
+        return new AnimatedSprite(animation);
+    }
 }
 
-interface IAnimatedActorOptions extends IActorOptions {
-    initialAnimKey?: string
-}

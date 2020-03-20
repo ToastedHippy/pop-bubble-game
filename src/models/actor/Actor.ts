@@ -1,19 +1,29 @@
 import * as PIXI from "pixi.js";
-import {IActorOptions} from "./actor.interface";
 import Sprite = PIXI.Sprite;
 import {ResourceStore} from "../Resource-store";
+import Container = PIXI.Container;
+import {isNumeric} from "rxjs/internal-compatibility";
 
 export abstract class Actor {
 
-    public readonly sprite: Sprite;
+    protected readonly sprite: Sprite;
     public readonly key: string;
+
+    public get height() { return this.sprite.height; }
+    public get width() { return this.sprite.width; }
+    public get x() { return this.sprite.x; }
+    public get y() { return this.sprite.y; }
+    public on(event: string, fn: Function) {
+        this.sprite.on(event, fn)
+    }
 
     protected readonly resourceStore: ResourceStore;
 
-    protected constructor(key?: string, options?: IActorOptions) {
+    protected constructor(options?: IActorOptions) {
         this.key = Math.random().toString(36).substr(2, 9);
         this.resourceStore = ResourceStore.instance;
-        this.sprite = this.createSprite(key);
+
+        this.sprite = this.createSprite(options && options.initialResourceKey);
         this.configure(options);
     }
 
@@ -45,14 +55,27 @@ export abstract class Actor {
     }
 
     public move(x?: number, y?: number) {
-        this.sprite.position.set(x, y);
+        if (isNumeric(x)) {
+            this.sprite.x = x;
+        }
+
+        if (isNumeric(y)) {
+            this.sprite.y = y;
+        }
     }
 
-    private throwIfSpriteMissed() {
-        if (!this.sprite) {
-            throw new Error(`sprite does not exists on ${this.constructor.name}`);
-        }
+    public attachToContainer(container: Container) {
+        container.addChild(this.sprite)
+    }
+
+    public removeFromAttachedContainer() {
+        this.sprite.parent.removeChild(this.sprite);
     }
 }
 
+
+export interface IActorOptions {
+    initialResourceKey?: string;
+    interactive?: boolean;
+}
 

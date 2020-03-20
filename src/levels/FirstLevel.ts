@@ -2,7 +2,7 @@ import {Level} from "../models/Level";
 import {Balloon} from "../models/Balloon";
 import {Cloud} from "../models/Cloud";
 import {ResourceStore} from "../models/Resource-store";
-import {Helper} from "../models/Helper";
+import {Utils} from "../models/Utils";
 
 export class FirstLevel extends Level {
 
@@ -55,8 +55,8 @@ export class FirstLevel extends Level {
 
     private updateBalloon(balloon: Balloon, deltaTime: number) {
 
-        if (balloon.sprite.y > 0 - balloon.sprite.height) {
-            balloon.sprite.y = balloon.sprite.y - this.balloonSpeed * deltaTime;
+        if (balloon.y > 0 - balloon.height) {
+            balloon.move(null, balloon.y - this.balloonSpeed * deltaTime);
         } else {
             this.removeActor(balloon);
         }
@@ -64,8 +64,8 @@ export class FirstLevel extends Level {
 
     private updateCloud(cloud: Cloud, deltaTime: number) {
 
-        if (cloud.sprite.x > 0 - cloud.sprite.width) {
-            cloud.sprite.x = cloud.sprite.x - this.cloudSpeed * deltaTime;
+        if (cloud.x > 0 - cloud.width) {
+            cloud.move(cloud.x - this.cloudSpeed * deltaTime);
         } else {
             this.removeActor(cloud);
         }
@@ -85,7 +85,7 @@ export class FirstLevel extends Level {
 
         const balloon = new Balloon();
 
-        balloon.sprite.on('pointerdown', () => {
+        balloon.on('pointerdown', () => {
             this.gameState.score++;
             // balloon.playSound('pop');
             balloon.playAnimation({
@@ -105,24 +105,24 @@ export class FirstLevel extends Level {
     }
 
     private getBalloonSpawnPoint(balloon: Balloon) {
-        const halfOfBalloonW = balloon.sprite.width / 2;
-        const balloonH = balloon.sprite.height;
+        const halfOfBalloonW = balloon.width / 2;
+        const balloonH = balloon.height;
         const viewW = this.app.screen.width;
-        const rand = Helper.getRandomNumber(halfOfBalloonW, viewW - halfOfBalloonW);
+        const rand = Utils.getRandomNumber(halfOfBalloonW, viewW - halfOfBalloonW);
         return [Math.floor(rand), this.app.screen.height + balloonH];
     }
 
     private getCloudSpawnPoint(cloud: Cloud, spawnInView: boolean = false) {
-        const cloudW = cloud.sprite.width;
-        const halfCloudH = cloud.sprite.height / 2;
+        const cloudW = cloud.width;
+        const halfCloudH = cloud.height / 2;
         const topBorder = this.app.screen.height * this.cloudSpawnTopBorder;
         const bottomBorder = this.app.screen.height * this.cloudSpawnBottomBorder;
         const rightBorder = this.app.screen.width + cloudW + 50;
 
         const x = spawnInView
-            ? Helper.getRandomNumber(0, rightBorder)
+            ? Utils.getRandomNumber(0, rightBorder)
             : rightBorder;
-        const y = Helper.getRandomNumber(topBorder + halfCloudH, bottomBorder - halfCloudH);
+        const y = Utils.getRandomNumber(topBorder + halfCloudH, bottomBorder - halfCloudH);
 
         return [x, y];
     }

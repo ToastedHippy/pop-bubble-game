@@ -1,6 +1,7 @@
 import {AnimatedActor} from "./actor/Animated-actor";
 import {DefineResources} from "./DefineResources.decorator";
-import {Helper} from "./Helper";
+import {Utils} from "./Utils";
+import {IActorOptions} from "./actor/Actor";
 
 
 export enum EBalloonColor {
@@ -20,18 +21,26 @@ export enum EBalloonColor {
     })
 export class Balloon extends AnimatedActor {
 
-    public readonly color: string;
-
-    constructor() {
-        // TODO make random
-        super({interactive: true});
-        this.color = 'red';
+    private _color: string;
+    public get color() {
+        return this._color;
     }
 
-    protected createSprite(initialAnimKey): PIXI.AnimatedSprite {
+    constructor() {
+        super({interactive: true});
+    }
+
+    protected createSprite(): PIXI.AnimatedSprite {
         let colors = Object.keys(this.resourceStore.resources.animations);
-        let color = Helper.getRandomNumber(0, colors.length - 1);
-        return super.createSprite(color);
+        this._color = colors[Utils.getRandomNumber(0, colors.length - 1)];
+        return super.createSprite(this._color);
+    }
+
+    protected configure(options?: IActorOptions) {
+        const ANIMATION_SPEED = 0.6;
+
+        super.configure(options);
+        this.sprite.animationSpeed = ANIMATION_SPEED;
     }
 }
 
