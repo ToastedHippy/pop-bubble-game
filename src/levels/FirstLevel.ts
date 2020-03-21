@@ -87,7 +87,7 @@ export class FirstLevel extends Level {
 
         balloon.on('pointerdown', () => {
             this.gameState.score++;
-            // balloon.playSound('pop');
+            balloon.playSound('pop');
             balloon.playAnimation({
                 onComplete: () => this.removeActor(balloon)
             });

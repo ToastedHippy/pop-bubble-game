@@ -2,6 +2,7 @@ import {AnimatedActor} from "./actor/Animated-actor";
 import {DefineResources} from "./DefineResources.decorator";
 import {Utils} from "./Utils";
 import {IActorOptions} from "./actor/Actor";
+import {SoundComponent} from "./actor-components/sound-component";
 
 
 export enum EBalloonColor {
@@ -25,9 +26,12 @@ export class Balloon extends AnimatedActor {
     public get color() {
         return this._color;
     }
+    private soundComponent: SoundComponent;
 
     constructor() {
         super({interactive: true});
+        this.soundComponent = this.addComponent<SoundComponent>(SoundComponent)
+            .attachSound('pop', this.resourceStore.resources.sounds['pop']);
     }
 
     protected createSprite(): PIXI.AnimatedSprite {
@@ -41,6 +45,10 @@ export class Balloon extends AnimatedActor {
 
         super.configure(options);
         this.sprite.animationSpeed = ANIMATION_SPEED;
+    }
+
+    public playSound(key: string) {
+        this.soundComponent.playSound(key);
     }
 }
 

@@ -47,7 +47,7 @@ export abstract class Level {
 
     removeActor(actor: Actor) {
         if (actor.key in this.actors) {
-            actor.removeFromAttachedContainer();
+            actor.removeFromParentContainer();
             delete this.actors[actor.key];
         }
     }
