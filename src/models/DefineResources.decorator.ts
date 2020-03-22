@@ -1,6 +1,6 @@
 import {ResourcesDefinition, ResourceStore} from "./Resource-store";
 
-export function DefineResources(resDefs: ResourcesDefinition) {
+export function WithResources(resDefs: ResourcesDefinition) {
     return function (target: Function) {
         ResourceStore.instance.defineResource(target, resDefs);
     };

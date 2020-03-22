@@ -3,6 +3,7 @@ import {Balloon} from "../models/Balloon";
 import {Cloud} from "../models/Cloud";
 import {ResourceStore} from "../models/Resource-store";
 import {Utils} from "../models/Utils";
+import {Player} from "../models/player";
 
 export class FirstLevel extends Level {
 
@@ -13,15 +14,21 @@ export class FirstLevel extends Level {
     private readonly cloudLaunchInterval = 10000;
     private readonly cloudSpeed = 0.3;
 
+    private player: Player;
+
     constructor() {
         super();
+        this.player = new Player();
     }
 
     async init() {
         // TODO make load by array?
         await this.resourcesStore.loadResourcesOf(Cloud);
         await this.resourcesStore.loadResourcesOf(Balloon);
+        await this.player.initCharacter();
 
+        this.attachActor(this.player.character);
+        this.player.character.move(...this.getPlayerSpawnPoint(this.player));
         this.startLaunchingClouds();
         this.startLaunchingBalloons();
     }
@@ -123,6 +130,13 @@ export class FirstLevel extends Level {
             ? Utils.getRandomNumber(0, rightBorder)
             : rightBorder;
         const y = Utils.getRandomNumber(topBorder + halfCloudH, bottomBorder - halfCloudH);
+
+        return [x, y];
+    }
+
+    private getPlayerSpawnPoint(player: Player,) {
+        const y = this.app.screen.height / 2;
+        const x = this.app.screen.width / 2;
 
         return [x, y];
     }

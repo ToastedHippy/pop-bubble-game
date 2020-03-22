@@ -36,7 +36,7 @@ export abstract class Actor {
         if (initialResourceKey) {
             let initTexture = this.resourceStore.resources.textures[initialResourceKey];
             if (!initTexture) {
-                throw new Error(`texture ${initialResourceKey} does not exists`)
+                throw new Error(`texture "${initialResourceKey}" does not exists`)
             }
             return new Sprite(initTexture);
         } else {
@@ -66,6 +66,10 @@ export abstract class Actor {
         if (isNumeric(y)) {
             this.sprite.y = y;
         }
+    }
+
+    public scale(x: number = 0, y: number = x) {
+        this.sprite.scale.set(x, y);
     }
 
     public attachToContainer(container: Container) {

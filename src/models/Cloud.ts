@@ -1,8 +1,8 @@
-import {DefineResources} from "./DefineResources.decorator";
+import {WithResources} from "./DefineResources.decorator";
 import {Actor} from "./actor/Actor";
 import {Utils} from "./Utils";
 
-@DefineResources({
+@WithResources({
     textures: {
         shape1: 'assets/images/cloud1.png',
         shape2: 'assets/images/cloud2.png',
@@ -18,7 +18,7 @@ export class Cloud extends Actor {
     }
 
     protected createSprite(initialResourceKey?: string): PIXI.Sprite {
-        const shapes = Object.keys(this.resourceStore.resources.textures);
+        const shapes = Object.keys(this.resourceStore.getResouresDefsOf(Cloud).textures);
         let shape = shapes[Utils.getRandomNumber(0, shapes.length - 1)];
         return super.createSprite(shape);
     }

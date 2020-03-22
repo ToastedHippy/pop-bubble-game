@@ -1,5 +1,5 @@
 import {AnimatedActor} from "./actor/Animated-actor";
-import {DefineResources} from "./DefineResources.decorator";
+import {WithResources} from "./DefineResources.decorator";
 import {Utils} from "./Utils";
 import {IActorOptions} from "./actor/Actor";
 import {SoundComponent} from "./actor-components/sound-component";
@@ -12,7 +12,7 @@ export enum EBalloonColor {
     yellow = 'yellow'
 }
 
-@DefineResources({
+@WithResources({
         sounds: {
             'pop': 'assets/sounds/balloon-pop.mp3'
         },

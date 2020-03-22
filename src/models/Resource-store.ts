@@ -95,15 +95,19 @@ export class ResourceStore {
         return Promise.all([soundP, otherResP]);
     }
 
+    getResouresDefsOf(cls: Function) {
+        return this.resourcesDefinitions.get(cls);
+    }
+
     defineResource(cls: Function, resourcesDefinition: ResourcesDefinition) {
         this.resourcesDefinitions.set(cls, resourcesDefinition)
     }
 }
 
 export interface ResourcesState {
-    textures: Record<string, Texture>,
-    sounds: Record<string, Howl>,
-    animations: Record<string, Texture[]>
+    textures: {[K: string]: Texture},
+    sounds: {[K: string]: Howl},
+    animations: {[K: string]: Texture[]}
 }
 
 export type ResourcesDefinition = {
