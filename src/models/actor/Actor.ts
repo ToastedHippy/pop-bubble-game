@@ -15,6 +15,7 @@ export abstract class Actor {
     public get width() { return this.sprite.width; }
     public get x() { return this.sprite.x; }
     public get y() { return this.sprite.y; }
+    public get parent() { return this.sprite.parent; }
 
     protected readonly resourceStore: ResourceStore;
 
@@ -28,7 +29,8 @@ export abstract class Actor {
     }
 
     public on(event: string, fn: Function) {
-        this.sprite.on(event, fn)
+        this.sprite.on(event, fn);
+        return this;
     }
 
     protected createSprite(initialResourceKey?: string) {

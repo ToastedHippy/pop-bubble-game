@@ -3,7 +3,7 @@ import {Balloon} from "../models/Balloon";
 import {Cloud} from "../models/Cloud";
 import {ResourceStore} from "../models/Resource-store";
 import {Utils} from "../models/Utils";
-import {Player} from "../models/player";
+import {Player} from "../models/player/player";
 
 export class FirstLevel extends Level {
 
