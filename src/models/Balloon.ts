@@ -3,6 +3,7 @@ import {WithResources} from "./DefineResources.decorator";
 import {Utils} from "./Utils";
 import {IActorOptions} from "./actor/Actor";
 import {SoundComponent} from "./actor-components/sound-component";
+import { ResourceStore } from "./Resource-store";
 
 
 export enum EBalloonColor {
@@ -17,7 +18,8 @@ export enum EBalloonColor {
             'pop': 'assets/sounds/balloon-pop.mp3'
         },
         animations: {
-            'red': 'assets/images/balloon-red/sprites.json'
+            'red': 'assets/images/balloon-red/sprites.json',
+            'blue': 'assets/images/balloon-red/sprites.json'
         }
     })
 export class Balloon extends AnimatedActor {
@@ -25,6 +27,9 @@ export class Balloon extends AnimatedActor {
     private _color: string;
     public get color() {
         return this._color;
+    }
+    public static get availableColors() {
+        return Object.keys(ResourceStore.instance.getResouresDefsOf(Balloon).animations || []);
     }
     private soundComponent: SoundComponent;
 
@@ -35,7 +40,7 @@ export class Balloon extends AnimatedActor {
     }
 
     protected createSprite(): PIXI.AnimatedSprite {
-        let colors = Object.keys(this.resourceStore.resources.animations);
+        let colors = Balloon.availableColors;
         this._color = colors[Utils.getRandomNumber(0, colors.length - 1)];
         return super.createSprite(this._color);
     }

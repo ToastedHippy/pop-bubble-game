@@ -23,7 +23,8 @@ export class Game {
             backgroundColor: 0x87CEEB
         });
         this.stage = this.pixiApp.stage;
-        this.uiLayer = new UiLayer(container);
+        this.uiLayer = UiLayer.instance;
+        this.uiLayer.attachToContainer(container);
         container.appendChild(this.pixiApp.view);
     }
 

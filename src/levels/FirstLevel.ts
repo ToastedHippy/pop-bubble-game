@@ -3,6 +3,7 @@ import {Balloon} from "../models/Balloon";
 import {Cloud} from "../models/Cloud";
 import {ResourceStore} from "../models/Resource-store";
 import {Utils} from "../models/Utils";
+import { StreakCounter } from "../models/Streak-counter";
 
 export class FirstLevel extends Level {
 
@@ -12,6 +13,8 @@ export class FirstLevel extends Level {
     private readonly cloudSpawnBottomBorder = 0.35;
     private readonly cloudLaunchInterval = 10000;
     private readonly cloudSpeed = 0.3;
+    private streakBalloonColor: string;
+    private streakCounter: StreakCounter;
 
     constructor() {
         super();
@@ -24,6 +27,10 @@ export class FirstLevel extends Level {
        
         this.startLaunchingClouds();
         this.startLaunchingBalloons();
+
+        this.updateStreakBalloonColor();
+        this.streakCounter = new StreakCounter(100);
+        this.streakCounter.resetStreak();
     }
 
     protected render(deltaTime: number) {
@@ -51,6 +58,10 @@ export class FirstLevel extends Level {
                 cloud.move(...this.getCloudSpawnPoint(cloud));
             }
         }, this.cloudLaunchInterval);
+    }
+
+    private updateStreakBalloonColor() {
+        this.streakBalloonColor =  Balloon.availableColors[Utils.getRandomNumber(0, Balloon.availableColors.length - 1)];
     }
 
     private updateBalloon(balloon: Balloon, deltaTime: number) {
@@ -86,7 +97,12 @@ export class FirstLevel extends Level {
         const balloon = new Balloon();
 
         balloon.on('pointerdown', () => {
-            this.gameState.score++;
+            if (balloon.color === this.streakBalloonColor) {
+                this.streakCounter.increaseStreak();
+            } else {
+                this.streakCounter.resetStreak();
+            }
+
             balloon.playSound('pop');
             balloon.playAnimation({
                 onComplete: () => this.removeActor(balloon)
