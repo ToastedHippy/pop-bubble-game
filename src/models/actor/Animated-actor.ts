@@ -5,19 +5,14 @@ import AnimatedSprite = PIXI.AnimatedSprite;
 export abstract class AnimatedActor extends Actor {
 
     protected readonly sprite: AnimatedSprite;
-    protected currentAnimationKey: string;
 
     protected constructor(options?: IActorOptions) {
         super(options);
     }
 
-    public playAnimation(options?: { animationKey?: string, loop?: boolean, onComplete?: () => void }) {
+    public playAnimation(options?: { loop?: boolean, onComplete?: () => void }) {
         if (options) {
             this.sprite.loop = !!options.loop;
-
-            if (options.animationKey && this.currentAnimationKey !== options.animationKey) {
-
-            }
 
             if (options.onComplete) {
                 this.sprite.onComplete = options.onComplete;

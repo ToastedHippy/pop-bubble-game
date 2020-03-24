@@ -17,11 +17,14 @@ export class FirstLevel extends Level {
     private readonly streakLimit = 3;
     private readonly availableBalloonColors: string[] = Balloon.availableColors;
 
+    private balloonLaunchingQueue: string[];
+
     private streakBalloonColor: string;
     private streakCounter: StreakCounter;
 
     constructor() {
         super();
+        this.balloonLaunchingQueue = [];
     }
 
     async init() {
@@ -93,7 +96,7 @@ export class FirstLevel extends Level {
 
     private createBalloon() {
 
-        const color = this.availableBalloonColors[Utils.getRandomNumber(0, this.availableBalloonColors.length - 1)];
+        const color = this.getBallonColor();
         const balloon = new Balloon(color);
 
         balloon.on('pointerdown', () => {
@@ -114,6 +117,15 @@ export class FirstLevel extends Level {
 
         return balloon;
 
+    }
+
+    private getBallonColor() {
+        
+        if (!this.balloonLaunchingQueue.length) {
+            this.balloonLaunchingQueue = Utils.shuffleArray(this.availableBalloonColors);
+        }
+
+        return this.balloonLaunchingQueue.pop();
     }
 
     private createCloud() {

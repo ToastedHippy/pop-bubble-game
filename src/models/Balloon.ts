@@ -26,17 +26,21 @@ export enum EBalloonColor {
     })
 export class Balloon extends AnimatedActor {
 
-    private _color: string;
-    public get color() {
-        return this._color;
-    }
     public static get availableColors() {
         return Object.keys(ResourceStore.instance.getResouresDefsOf(Balloon).animations || []);
     }
+
+    private  readonly _color: string;
+    public get color() {
+        return this._color;
+    }
+
     private soundComponent: SoundComponent;
 
     constructor(color: string) {
         super({initialResourceKey: color, interactive: true});
+        
+        this._color = color;
         this.soundComponent = this.addComponent<SoundComponent>(SoundComponent)
             .attachSound('pop', this.resourceStore.resources.sounds['pop']);
     }
