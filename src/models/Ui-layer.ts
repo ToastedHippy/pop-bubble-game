@@ -26,7 +26,7 @@ export class UiLayer {
     public attachToContainer(container: HTMLElement) {
         this.container = container;
         this.container.appendChild(this.pauseBtn);
-        // this.container.appendChild(this.scoreIndicator);
+        this.container.appendChild(this.scoreIndicator);
     }
 
 
@@ -34,7 +34,7 @@ export class UiLayer {
         this.pauseBtn = document.createElement('button');
 
         this.pauseBtn.className = 'pauseBtn';
-        this.pauseBtn.style.cssText = 'position: fixed; top: 20px; right: 20px';
+        this.pauseBtn.style.cssText = 'position: fixed; top: 20px; right: 20px; font-size: 21px; padding: 5px 10px;';
         this.pauseBtn.addEventListener('click', (event) => this.togglePause());
 
         this.gameState.paused$.subscribe((paused) => {
@@ -49,7 +49,7 @@ export class UiLayer {
     private initScoreIndicator() {
         this.scoreIndicator = document.createElement('span');
 
-        this.scoreIndicator.style.cssText = 'position: fixed; top: 20px; left: 20px';
+        this.scoreIndicator.style.cssText = 'position: fixed; top: 20px; left: 20px; font-size: 30px';
 
         this.gameState.score$.subscribe((score) => {
             this.scoreIndicator.innerText = score.toString();

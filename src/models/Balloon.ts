@@ -19,7 +19,9 @@ export enum EBalloonColor {
         },
         animations: {
             'red': 'assets/images/balloon-red/sprites.json',
-            'blue': 'assets/images/balloon-red/sprites.json'
+            'blue': 'assets/images/balloon-blue/sprites.json',
+            'green': 'assets/images/balloon-green/sprites.json',
+            'yellow': 'assets/images/balloon-yellow/sprites.json'
         }
     })
 export class Balloon extends AnimatedActor {
@@ -33,16 +35,10 @@ export class Balloon extends AnimatedActor {
     }
     private soundComponent: SoundComponent;
 
-    constructor() {
-        super({interactive: true});
+    constructor(color: string) {
+        super({initialResourceKey: color, interactive: true});
         this.soundComponent = this.addComponent<SoundComponent>(SoundComponent)
             .attachSound('pop', this.resourceStore.resources.sounds['pop']);
-    }
-
-    protected createSprite(): PIXI.AnimatedSprite {
-        let colors = Balloon.availableColors;
-        this._color = colors[Utils.getRandomNumber(0, colors.length - 1)];
-        return super.createSprite(this._color);
     }
 
     protected configure(options?: IActorOptions) {

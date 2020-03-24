@@ -13,6 +13,10 @@ export class FirstLevel extends Level {
     private readonly cloudSpawnBottomBorder = 0.35;
     private readonly cloudLaunchInterval = 10000;
     private readonly cloudSpeed = 0.3;
+    private readonly popScoreBase = 1;
+    private readonly streakLimit = 3;
+    private readonly availableBalloonColors: string[] = Balloon.availableColors;
+
     private streakBalloonColor: string;
     private streakCounter: StreakCounter;
 
@@ -24,13 +28,12 @@ export class FirstLevel extends Level {
         // TODO make load by array?
         await this.resourcesStore.loadResourcesOf(Cloud);
         await this.resourcesStore.loadResourcesOf(Balloon);
-       
+        this.streakCounter = new StreakCounter(this.popScoreBase * 2, this.streakLimit);
+
         this.startLaunchingClouds();
         this.startLaunchingBalloons();
 
-        this.updateStreakBalloonColor();
-        this.streakCounter = new StreakCounter(100);
-        this.streakCounter.resetStreak();
+        this.changeStreak();
     }
 
     protected render(deltaTime: number) {
@@ -58,10 +61,6 @@ export class FirstLevel extends Level {
                 cloud.move(...this.getCloudSpawnPoint(cloud));
             }
         }, this.cloudLaunchInterval);
-    }
-
-    private updateStreakBalloonColor() {
-        this.streakBalloonColor =  Balloon.availableColors[Utils.getRandomNumber(0, Balloon.availableColors.length - 1)];
     }
 
     private updateBalloon(balloon: Balloon, deltaTime: number) {
@@ -94,12 +93,14 @@ export class FirstLevel extends Level {
 
     private createBalloon() {
 
-        const balloon = new Balloon();
+        const color = this.availableBalloonColors[Utils.getRandomNumber(0, this.availableBalloonColors.length - 1)];
+        const balloon = new Balloon(color);
 
         balloon.on('pointerdown', () => {
             if (balloon.color === this.streakBalloonColor) {
-                this.streakCounter.increaseStreak();
+                this.updateStreak();
             } else {
+                this.gameState.score += this.popScoreBase;
                 this.streakCounter.resetStreak();
             }
 
@@ -112,6 +113,7 @@ export class FirstLevel extends Level {
         this.attachActor(balloon);
 
         return balloon;
+
     }
 
     private createCloud() {
@@ -141,6 +143,21 @@ export class FirstLevel extends Level {
         const y = Utils.getRandomNumber(topBorder + halfCloudH, bottomBorder - halfCloudH);
 
         return [x, y];
+    }
+
+    private updateStreak() {
+        this.streakCounter.increaseStreak();
+        
+        if (this.streakCounter.streakIsFull) {
+            this.changeStreak();
+        }
+    }
+
+    private changeStreak() {
+        this.streakCounter.resetStreak();
+        this.streakBalloonColor =  Balloon.availableColors[Utils.getRandomNumber(0, Balloon.availableColors.length - 1)];
+
+        this.streakCounter.changeColor(this.streakBalloonColor);
     }
 }
 
