@@ -8,13 +8,13 @@ import { StreakCounter } from "../models/Streak-counter";
 export class FirstLevel extends Level {
 
     private readonly balloonSpeed = 2;
-    private readonly balloonLaunchInterval = 1500;
+    private readonly balloonLaunchInterval = 1000;
     private readonly cloudSpawnTopBorder = 0.01;
     private readonly cloudSpawnBottomBorder = 0.35;
     private readonly cloudLaunchInterval = 10000;
     private readonly cloudSpeed = 0.3;
     private readonly popScoreBase = 1;
-    private readonly streakLimit = 3;
+    private readonly streakLimit = 5;
     private readonly availableBalloonColors: string[] = Balloon.availableColors;
 
     private balloonLaunchingQueue: string[];
@@ -69,7 +69,13 @@ export class FirstLevel extends Level {
     private updateBalloon(balloon: Balloon, deltaTime: number) {
 
         if (balloon.y > 0 - balloon.height) {
-            balloon.move(null, balloon.y - this.balloonSpeed * deltaTime);
+            let speed = this.balloonSpeed;
+
+            if (balloon.color === this.streakBalloonColor) {
+                speed *= this.streakCounter.value + 1;
+            }
+
+            balloon.move(null, balloon.y - speed * deltaTime);
         } else {
             this.removeActor(balloon);
         }

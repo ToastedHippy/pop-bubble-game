@@ -3,11 +3,11 @@ import { GameState } from "./Game-state";
 
 export class StreakCounter {
 
-    private _streak: number;
-    public get streak() { return this._streak; }
+    private _value: number;
+    public get value() { return this._value; }
 
     public get streakIsFull() {
-        return this._streak >= this.limit;
+        return this._value >= this.limit;
     }
 
     private uiLayer: UiLayer;
@@ -26,7 +26,7 @@ export class StreakCounter {
     }
 
     public increaseStreak() {
-        this.updateStreak(this._streak + 1);
+        this.updateStreak(this._value + 1);
     }
 
     public resetStreak() {
@@ -34,9 +34,9 @@ export class StreakCounter {
     }
 
     private updateStreak(newValue: number) {
-        this._streak = newValue;
-        this.gameState.score += this._streak * this.baseValue;
-        this.element.innerText = this._streak.toString();
+        this._value = newValue;
+        this.gameState.score += this._value * this.baseValue;
+        this.element.innerText = this._value.toString();
     }
 
     private initElement() {
