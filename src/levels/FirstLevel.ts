@@ -28,9 +28,8 @@ export class FirstLevel extends Level {
     }
 
     async init() {
-        // TODO make load by array?
-        await this.resourcesStore.loadResourcesOf(Cloud);
-        await this.resourcesStore.loadResourcesOf(Balloon);
+        await this.resourcesStore.loadResourcesOf([Cloud, Balloon]);
+        
         this.streakCounter = new StreakCounter(this.popScoreBase * 2, this.streakLimit);
 
         this.startLaunchingClouds();

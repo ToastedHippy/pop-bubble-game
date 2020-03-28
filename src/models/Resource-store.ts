@@ -27,7 +27,14 @@ export class ResourceStore {
         return this._instance;
     }
 
-    async loadResourcesOf(cls: Function) {
+    public async loadResourcesOf(cls: Function | Function[]) {
+        if (Array.isArray(cls)) {
+            return Promise.all(cls.map(c => this._loadResourcesOf(c)));
+        } else {
+            return this._loadResourcesOf(cls);
+        }
+    }
+    private async _loadResourcesOf(cls: Function) {
         // TODO handle case when resource is already loaded
 
         let resDefs = this.resourcesDefinitions.get(cls);
