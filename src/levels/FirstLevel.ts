@@ -28,7 +28,7 @@ export class FirstLevel extends Level {
     }
 
     async init() {
-        await this.resourcesStore.loadResourcesOf([Cloud, Balloon]);
+        await this.resourcesStore.loadResourcesOf([Cloud, Balloon], (p) => console.log(p));
         
         this.streakCounter = new StreakCounter(this.popScoreBase * 2, this.streakLimit);
 

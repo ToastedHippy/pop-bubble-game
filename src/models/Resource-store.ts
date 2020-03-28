@@ -2,6 +2,8 @@ import * as PIXI from "pixi.js";
 import Texture = PIXI.Texture;
 import {Howl} from "howler";
 import Loader = PIXI.Loader;
+import Resource = PIXI.resources.Resource;
+import LoaderResource = PIXI.LoaderResource;
 
 export class ResourceStore {
     private static _instance: ResourceStore;
@@ -27,25 +29,53 @@ export class ResourceStore {
         return this._instance;
     }
 
-    public async loadResourcesOf(cls: Function | Function[]) {
-        if (Array.isArray(cls)) {
-            return Promise.all(cls.map(c => this._loadResourcesOf(c)));
+    public async loadResourcesOf(actorCls: Function | Function[], onProgress?: onLoadingProgress) {
+        if (Array.isArray(actorCls)) {
+            let actorProgress = new Map();
+
+            return Promise.all(actorCls.map(c => {
+                let patchedOnProgress = (n) => {};
+
+                if (onProgress) {
+                    actorProgress.set(c, 0);
+
+                    patchedOnProgress = percent => {
+                        actorProgress.set(c, percent);
+                        onProgress(this.average(Array.from(actorProgress.values())));
+                    }
+
+                }
+                return this._loadResourcesOf(c, patchedOnProgress);
+            }));
         } else {
-            return this._loadResourcesOf(cls);
+            return this._loadResourcesOf(actorCls, onProgress);
         }
     }
-    private async _loadResourcesOf(cls: Function) {
+    private async _loadResourcesOf(cls: Function, onProgress?: onLoadingProgress) {
         // TODO handle case when resource is already loaded
 
         let resDefs = this.resourcesDefinitions.get(cls);
+
+        let needToLoadSounds = resDefs.sounds ? Object.keys(resDefs.sounds).length : 0;
+        let alreadyLoadedSounds = 0;
+        let progressOfSound = resDefs.sounds ? 0 : 100;
+        let otherProgress = 0;
+
         let soundP = resDefs.sounds
             ? new Promise<void>((sResolve, sReject) => {
+
                 for (let key in resDefs.sounds) {
                     this.resources.sounds[key] = new Howl({
                         src: resDefs.sounds[key]
                     });
 
                     this.resources.sounds[key].once('load', () => {
+
+                        if (onProgress) {
+                            progressOfSound = ++alreadyLoadedSounds / needToLoadSounds * 100;
+                            onProgress(this.average([progressOfSound, otherProgress]))
+                        }
+
                         if (Object.values(this.resources.sounds).every(s => s.state() === 'loaded')) {
                             sResolve();
                         }
@@ -70,6 +100,12 @@ export class ResourceStore {
                 }
             }
 
+            if (onProgress) {
+                loader.onLoad.add((l: Loader) => {
+                    otherProgress = l.progress;
+                    onProgress(this.average([progressOfSound, otherProgress]))
+                });
+            }
             loader.load((loader, resources) => {
 
                 for (const loaderKey in resources) {
@@ -102,6 +138,10 @@ export class ResourceStore {
         return Promise.all([soundP, otherResP]);
     }
 
+    average(numbers: number[]) {
+        return numbers.reduce((prev, cur) =>  prev + cur) / numbers.length;
+    }
+
     getResouresDefsOf(cls: Function) {
         return this.resourcesDefinitions.get(cls);
     }
@@ -123,3 +163,5 @@ export type ResourcesDefinition = {
 
 export interface IResourceDefinition {
 }
+
+export type onLoadingProgress = (persent: number) => void;
