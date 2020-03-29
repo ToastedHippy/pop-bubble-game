@@ -4,6 +4,7 @@ import {Cloud} from "../models/Cloud";
 import {ResourceStore} from "../models/Resource-store";
 import {Utils} from "../models/Utils";
 import { StreakCounter } from "../models/Streak-counter";
+import {LoadingIndicator} from "../models/Loading-indicator";
 
 export class FirstLevel extends Level {
 
@@ -28,8 +29,10 @@ export class FirstLevel extends Level {
     }
 
     async init() {
-        await this.resourcesStore.loadResourcesOf([Cloud, Balloon], (p) => console.log(p));
-        
+        this.showLoadingScreen();
+        await this.resourcesStore.loadResourcesOf([Cloud, Balloon], (p) => this.updateLoadingState(p));
+        this.hideLoadingScreen();
+
         this.streakCounter = new StreakCounter(this.popScoreBase * 2, this.streakLimit);
 
         this.startLaunchingClouds();

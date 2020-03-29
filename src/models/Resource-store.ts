@@ -4,6 +4,7 @@ import {Howl} from "howler";
 import Loader = PIXI.Loader;
 import Resource = PIXI.resources.Resource;
 import LoaderResource = PIXI.LoaderResource;
+import {Utils} from "./Utils";
 
 export class ResourceStore {
     private static _instance: ResourceStore;
@@ -41,7 +42,7 @@ export class ResourceStore {
 
                     patchedOnProgress = percent => {
                         actorProgress.set(c, percent);
-                        onProgress(this.average(Array.from(actorProgress.values())));
+                        onProgress(Utils.average(Array.from(actorProgress.values())));
                     }
 
                 }
@@ -73,7 +74,7 @@ export class ResourceStore {
 
                         if (onProgress) {
                             progressOfSound = ++alreadyLoadedSounds / needToLoadSounds * 100;
-                            onProgress(this.average([progressOfSound, otherProgress]))
+                            onProgress(Utils.average([progressOfSound, otherProgress]))
                         }
 
                         if (Object.values(this.resources.sounds).every(s => s.state() === 'loaded')) {
@@ -103,7 +104,7 @@ export class ResourceStore {
             if (onProgress) {
                 loader.onLoad.add((l: Loader) => {
                     otherProgress = l.progress;
-                    onProgress(this.average([progressOfSound, otherProgress]))
+                    onProgress(Utils.average([progressOfSound, otherProgress]))
                 });
             }
             loader.load((loader, resources) => {
@@ -137,11 +138,7 @@ export class ResourceStore {
 
         return Promise.all([soundP, otherResP]);
     }
-
-    average(numbers: number[]) {
-        return numbers.reduce((prev, cur) =>  prev + cur) / numbers.length;
-    }
-
+    
     getResouresDefsOf(cls: Function) {
         return this.resourcesDefinitions.get(cls);
     }

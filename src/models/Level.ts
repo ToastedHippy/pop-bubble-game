@@ -6,6 +6,8 @@ import Renderer = PIXI.Renderer;
 import Application = PIXI.Application;
 import {GameState} from "./Game-state";
 import {ResourceStore} from "./Resource-store";
+import {LoadingIndicator} from "./Loading-indicator";
+import {LoadingScreen} from "./Loading-screen";
 
 export abstract class Level {
 
@@ -15,10 +17,13 @@ export abstract class Level {
     private readonly renderF: (d: number) => void;
     protected gameState: GameState;
     protected resourcesStore: ResourceStore;
+    private loadingScreen: LoadingScreen;
 
     protected constructor() {
         this.gameState = GameState.instance;
         this.resourcesStore = ResourceStore.instance;
+        this.loadingScreen = new LoadingScreen();
+
         this.renderF = (delta) => {
 
             if (!this.gameState.paused) {
@@ -59,6 +64,18 @@ export abstract class Level {
             .then(() => this.attachRenderF());
     }
 
-    protected abstract render(deltaTime: number): void
+    protected abstract render(deltaTime: number): void;
+
+    protected showLoadingScreen() {
+        this.loadingScreen.show();
+    }
+
+    protected hideLoadingScreen() {
+        this.loadingScreen.hide();
+    }
+
+    protected updateLoadingState(newValue: number) {
+        this.loadingScreen.updateIndicator(newValue);
+    }
 
 }

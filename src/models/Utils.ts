@@ -17,5 +17,9 @@ export const Utils = {
         }
 
         return result;
+    },
+
+    average(numbers: number[]) {
+        return numbers.reduce((prev, cur) =>  prev + cur) / numbers.length;
     }
 }
