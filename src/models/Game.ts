@@ -30,7 +30,6 @@ export class Game {
 
     run() {
         this.startLevel(new FirstLevel());
-
     }
 
     startLevel(level: Level) {

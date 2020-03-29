@@ -6,16 +6,21 @@ export class LoadingScreen {
     private element: HTMLElement;
     private uiLayer: UiLayer;
 
-    constructor() {
+    constructor(options?: LoadingScreenOptions) {
         this.uiLayer = UiLayer.instance;
-        this.initElement();
+        this.initElement(options?.text);
         this.loadingIndicator = new LoadingIndicator();
         this.loadingIndicator.appendTo(this.element);
         this.hide();
     }
 
-    private initElement() {
+    private initElement(text: string) {
         this.element = document.createElement('div');
+        let textElement = document.createElement('span');
+
+        textElement.innerText = text || '';
+
+        this.element.appendChild(textElement);
         this.element.style.cssText = 'top: 0; height: 100vh; width: 100vw; align-items: center; justify-content: center;';
         this.uiLayer.appendChild(this.element);
     }
@@ -31,4 +36,8 @@ export class LoadingScreen {
     hide() {
         this.element.style.display = 'none'
     }
+}
+
+export interface LoadingScreenOptions {
+    text?: string
 }

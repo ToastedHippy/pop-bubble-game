@@ -9,8 +9,11 @@ import {Game} from "./models/Game";
 //     });
 // }
 
+const splashScreen = document.getElementById('splash-screen');
 const appContainer = document.getElementById('pixiApp');
 const game = new Game(appContainer);
 
 game.run();
+
+splashScreen.parentElement.removeChild(splashScreen);
 

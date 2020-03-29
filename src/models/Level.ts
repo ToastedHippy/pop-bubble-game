@@ -22,7 +22,7 @@ export abstract class Level {
     protected constructor() {
         this.gameState = GameState.instance;
         this.resourcesStore = ResourceStore.instance;
-        this.loadingScreen = new LoadingScreen();
+        this.loadingScreen = new LoadingScreen({text: 'Loading assets: '});
 
         this.renderF = (delta) => {
 
